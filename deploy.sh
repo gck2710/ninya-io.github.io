@@ -19,4 +19,4 @@ git commit -m "$msg"
 git push origin dev
 git branch -D master
 git subtree split -P public -b master
-git push origin master:master
+git push -f origin master:master
