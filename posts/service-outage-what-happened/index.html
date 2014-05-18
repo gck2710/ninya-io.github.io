@@ -10,8 +10,8 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <base href="http://ninya-io.github.io">
-    <title> ninya.io combines data from StackOverflow and ServerFault </title>
-    <link rel="canonical" href="http://ninya-io.github.io/posts/ninya-combines-data-from-stackoverflow-and-serverfault">
+    <title> service outage: what happened </title>
+    <link rel="canonical" href="http://ninya-io.github.io/posts/service-outage-what-happened">
     
 
 <link rel="stylesheet" href="/css/poole.css">
@@ -64,30 +64,37 @@
 
     
     <div class="container content">
-      <h1 class="post-title">ninya.io combines data from StackOverflow and ServerFault</h1>
+      <h1 class="post-title">service outage: what happened</h1>
         <section id="main">
-          <h5 id="date"> Mon May 12, 2014 </h5>
+          <h5 id="date"> Sun May 18, 2014 </h5>
           
 
-<p>We&rsquo;ve been hard at work here to get a new exciting feature done. <a href="http://www.ninya.io">ninya.io</a> is all about making interesting people in tech more discoverable.
-<a href="http://www.ninya.io">ninya.io</a> let&rsquo;s you search for skilled tech people based on locations and skills. So far, the only data source we hooked up to was <a href="http://www.stackoverflow.com">StackOverflow</a>.</p>
+<p>On 2014-05-17 we received an automated email from our elasticsearch provider <a href="http://www.found.no">found.no</a> who informed us that
+our elasticsearch instance ran out of memory and was restarted. Unfortunately this email did not directly rang the alarm sirens on our end
+as we had this a couple of times before without causing any inconvenience.</p>
 
-<p>We are pleased to announce that from now on you&rsquo;ll start seeing mixed result sets with users from <a href="http://www.serverfault.com">ServerFault</a> also being considered for your search requests.</p>
+<p>We noticed the service was unavailable soon. We were able to quickly narrow it down to our elasticsearch index being corrupted.
+Since we don&rsquo;t host our own elasticsearch but instead rely on the awesome service of <a href="http://www.found.no">found.no</a>, we immediately
+reached out to their support.</p>
 
-<p>Both platforms serve overlapping needs so a mashup comes naturally. For instance you might expect users proficient in Apache or Nginx stuff on both sites.</p>
+<p>Fortunately they were able to restore everything within minutes.</p>
 
-<p>We added a small icon to the upper right corner of the user to indicate the platform where the user lives on. You can also click on it to directly jump to the user&rsquo;s profile page on that site.</p>
+<p>They also told us that our elasticsearch instance was badly in need of more memory and that the same problem will happen again if we
+don&rsquo;t provide it with more memory.</p>
 
-<p><img src="/images/ninya_mashup.png" alt="mixed results" />
-</p>
+<h3 id="toc_0">What do we do to make sure this won&rsquo;t happen again?</h3>
 
-<h3 id="toc_0">Where do we go from here? Is this an attempt to mash up all StackExchange sites?</h3>
+<p>1.we immediately doubled the amount of memory of our elasticsearch instance</p>
 
-<p>It&rsquo;s not! We mash up sources which we feel are a good fit for <a href="http://www.ninya.io">ninya.io</a>. While adding further StackExchange sites is a very simple and scalable
-process now, we believe there are other great candidates to be added, too ;-) The main challenge is to make users from different sites with different
-reputation systems somewhat comparable.</p>
+<p>2.we will install email/sms warnings to get notified about outages quicker</p>
 
-<p>Stay tuned.</p>
+<p>3.we will provide a <a href="http://status.ninya.io">http://status.ninya.io</a> site for everyone to quickly see the status of the service</p>
+
+<h3 id="toc_1">How can you help us to make the service more reliable?</h3>
+
+<p><a href="http://www.ninya.io">ninya.io</a> is a free open source service. It&rsquo;s currently backed with a small private hobby budget. If you like to become a sponsor
+please drop an email to <a href="mailto:christoph.burgdorf@gmail.com">christoph.burgdorf@gmail.com</a>. Alternatively you might leave a <a href="https://www.gittip.com/cburgdorf/">gittip</a>
+if that&rsquo;s more your thing.</p>
 
         </section>
     </div>
@@ -101,14 +108,10 @@ reputation systems somewhat comparable.</p>
   <hr />
   <hr />
   
-    <span class="left">
-    &nbsp; <em>&laquo; Previous:</em> <a class="next" href="http://ninya-io.github.io/posts/service-outage-what-happened">service outage: what happened</a>
-    </span>
-  
 
   
     <span class="right">
-    <em>Next: </em><a class="next" href="http://ninya-io.github.io/posts/welcome-our-new-blog"> &nbsp; Welcome our new blog</a> &raquo;
+    <em>Next: </em><a class="next" href="http://ninya-io.github.io/posts/ninya-combines-data-from-stackoverflow-and-serverfault"> &nbsp; ninya.io combines data from StackOverflow and ServerFault</a> &raquo;
     </span>
   
 </div>
