@@ -1,0 +1,207 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <base href="http://ninya-io.github.io">
+    <title> How we handle server side rendering with our AngularJS app </title>
+    <link rel="canonical" href="http://ninya-io.github.io/posts/how-we-handle-server-side-rendering-with-our-angularjs-app">
+    
+
+<link rel="stylesheet" href="/css/poole.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/lanyon.css">
+<link rel="stylesheet" href="/css/custom.css">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+</head>
+
+
+<body class="theme-base-08">
+  
+
+
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p><a href="http://www.ninya.io">ninya.io</a> is an open source service that helps you to discover
+    skilled tech people from near and far.</p>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Blog</a>
+    <a class="sidebar-nav-item" href="https://twitter.com/ninya_io">Twitter</a>
+    <a class="sidebar-nav-item" href="https://github.com/ninya-io">Github</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2014 Christoph Burgdorf. Powered by <a href="http://hugo.spf13.com">Hugo</a>. Design adapted from <a href="http://lanyon.getpoole.com">Lanyon</a>.
+    </p>
+  </div>
+</div>
+
+
+  
+  <div class="wrap">
+    <div class="masthead">
+      <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="ninya.io | blog">
+            <img class="ninya-logo" src="https://raw.githubusercontent.com/ninya-io/ninya.io/master/graphics/logo/ninya-mascot@2x.png">
+            ninya.io | blog
+            </a>
+          </h3>
+      </div>
+    </div>
+
+    
+    <div class="container content">
+      <h1 class="post-title">How we handle server side rendering with our AngularJS app</h1>
+        <section id="main">
+          <h5 id="date"> Fri May 23, 2014 </h5>
+          
+
+<p>Disclaimer: That&rsquo;s might be a bold title for the technique described in this post. We hope you don&rsquo;t
+hate us by the end of the post ;-)</p>
+
+<h3 id="toc_0">What do we need serverside rendering for?</h3>
+
+<p>Let&rsquo;s take a look at how <a href="http://www.ninya.io">ninya.io</a> handled shared queries until today. What is a shared query anyway?</p>
+
+<p><a href="http://www.ninya.io/?q=location:%20Berlin%20answers:%20javascript,%20git">http://www.ninya.io/?q=location:%20Berlin%20answers:%20javascript,%20git</a></p>
+
+<p><a href="http://www.ninya.io">ninya.io</a> let&rsquo;s you share queries with a simple query parameter syntax. There&rsquo;s a twitter share
+button on top the results that produces such a link to make things easy.</p>
+
+<p><img src="/how-we-handle-server-side-rendering-with-our-angularjs-app/share_button.png" alt="share button" />
+</p>
+
+<h3 id="toc_1">What happens when you open such a link?</h3>
+
+<p><a href="http://www.ninya.io">ninya.io</a> is a single page application (SPA) written with AngularJS. The idiomatic SPA way
+is to evaluate the query parameters on the client side <em>in the browser</em> and then fetch the
+results via ajax.</p>
+
+<p>Unfortunately this approach has two major drawbacks.</p>
+
+<h3 id="toc_2">Speed.</h3>
+
+<p>It&rsquo;s pretty obvious: If the browser first has to fetch the app from the server and then has to fetch the
+JSON data with a subsequent request, you are ruining performance for your users.</p>
+
+<p>This is the main reason why airbnb and twitter switched to a more sophisticated approach where the
+SPA is run on the server to construct the html for the initial response. After that the app runs just
+like any other SPA and fetches JSON from a server via ajax to construct html on the client side.</p>
+
+<h3 id="toc_3">SEO</h3>
+
+<p>But it&rsquo;s not only speed we are sacrificing. If the first response does not include the entire html, search engines
+can&rsquo;t see it. Well, there are other techniques to work around this and after all Google said they are
+<a href="http://googlewebmastercentral.blogspot.de/2014/05/understanding-web-pages-better.html">starting to look at web pages the way humans see them</a>
+but if we can do better, we should.</p>
+
+<p>So, let&rsquo;s do what airbnb and twitter do and include the entire html for the result set with the initial response!</p>
+
+<p>Unfortunately there&rsquo;s no out of the box support for server side rendering in AngularJS. Although it has been <a href="https://github.com/angular/angular.js/issues/2104">under discussion</a>
+for quite some time among the AngularJS community.</p>
+
+<h3 id="toc_4">How does ninya.io do it?</h3>
+
+<p>The way <a href="http://www.ninya.io">ninya.io</a> handles this is far less sophisticated compared to how airbnb or twitter handle it. It only
+works for us because our frontend code base is very small. This approach probably does not scale very well
+for larger code bases.</p>
+
+<ol>
+<li><p>We have our entire html in one file. There are no templates loaded via <code>ng-include</code>, <code>ng-view</code> or something alike.</p></li>
+
+<li><p>The only critical part for us is constructing the result list which is rendered as an <code>&lt;ul&gt;</code>. AngularJS constructs
+the <code>&lt;li&gt;</code> elements on the client side via a <code>ng-repeat</code> attribute.</p></li>
+</ol>
+
+<p><img src="/how-we-handle-server-side-rendering-with-our-angularjs-app/client_list.png" alt="client side list" />
+</p>
+
+<p>What we do is, we duplicate this peace of markup and construct the <code>&lt;li&gt;</code> part via server side templating (we use ejs).
+Yes, that&rsquo;s right - we sacrifice DRY here. We end up with two lists but only one of them is visible at the same time.</p>
+
+<p><img src="/how-we-handle-server-side-rendering-with-our-angularjs-app/server_list.png" alt="server side list" />
+</p>
+
+<ol>
+<li>Now the next thing we need is a way to tell our AngularJS app whether it should display the angularized <code>&lt;ul&gt;</code> or the
+server constructed <code>&lt;ul&gt;</code>. We simply inject a global variable <code>var serverRendered = true</code> into our app that our AngularJS
+code has access to.</li>
+</ol>
+
+<p><img src="/how-we-handle-server-side-rendering-with-our-angularjs-app/serverRendered.png" alt="injected variable" />
+</p>
+
+<p>Based on that state, AngularJS can toggle visibility between the lists.</p>
+
+<p>When the user starts typing into the search boxes we set it to <code>false</code> so that the server side generated <code>&lt;ul&gt;</code>
+becomes hidden and the other one becomes visible.</p>
+
+<p>Again, it&rsquo;s a simple approach and won&rsquo;t work for bigger apps. It serves our use case well though.</p>
+
+        </section>
+    </div>
+  </div>
+
+  <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+  
+
+<div class="container">
+  <hr />
+  <hr />
+  
+
+  
+    <span class="right">
+    <em>Next: </em><a class="next" href="http://ninya-io.github.io/posts/service-outage-what-happened"> &nbsp; service outage: what happened</a> &raquo;
+    </span>
+  
+</div>
+
+  <br />
+  
+<div class="container">
+  <ul class="catlist">
+    <li><em>Categories: </em></li>
+    
+      <li><a href="/categories/ninya.io">ninya.io</a> </li>
+    
+  </ul>
+</div>
+
+
+
+  
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48577334-2', 'ninya.io');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>
+
+
+
