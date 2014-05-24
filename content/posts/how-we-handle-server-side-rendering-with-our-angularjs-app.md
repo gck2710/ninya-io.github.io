@@ -5,10 +5,10 @@ categories:
     - "ninya.io"
 ---
 
-Disclaimer: That's might be a bold title for the technique described in this post. We hope you don't
+Disclaimer: That might be a bold title for the technique described in this post. We hope you don't
 hate us by the end of the post ;-)
 
-### What do we need serverside rendering for?
+### What do we need server side rendering for?
 
 Let's take a look at how [ninya.io](http://www.ninya.io) handled shared queries until today. What is a shared query anyway?
 
