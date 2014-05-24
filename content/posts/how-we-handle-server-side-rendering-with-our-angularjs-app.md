@@ -61,7 +61,7 @@ the `<li>` elements on the client side via a `ng-repeat` attribute.
 
 ![client side list](/how-we-handle-server-side-rendering-with-our-angularjs-app/client_list.png)
 
-What we do is, we duplicate this peace of markup and construct the `<li>` part via server side templating (we use ejs).
+What we do is, we duplicate this piece of markup and construct the `<li>` part via server side templating (we use ejs).
 Yes, that's right - we sacrifice DRY here. We end up with two lists but only one of them is visible at the same time.
 
 ![server side list](/how-we-handle-server-side-rendering-with-our-angularjs-app/server_list.png)
