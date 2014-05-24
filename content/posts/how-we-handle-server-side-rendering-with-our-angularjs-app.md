@@ -1,6 +1,6 @@
 ---
 title: "How we handle server side rendering with our AngularJS app"
-date: "2014-05-23"
+date: "2014-05-24"
 categories:
     - "ninya.io"
 ---
